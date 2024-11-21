@@ -1,8 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "../../common/Button";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const handleSignUp = () => {
+    console.log("Sign Up clicked");
+  };
+
+  const handleLogin = () => {
+    console.log("Login clicked");
+  };
   return (
     <header className=" p-8 cursor-pointer">
       <div className="container mx-auto flex justify-between items-center">
@@ -38,12 +46,8 @@ const Header: React.FC = () => {
           </ul>
         </nav>
         <div className="flex gap-3 cursor-pointer">
-          <button className="px-6 py-2 border border-primary text-white rounded-lg hover:bg-primary  ">
-            Sign up
-          </button>
-          <button className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-hover ">
-            Login
-          </button>
+          <Button label="Sign Up" variant="outline" onClick={handleSignUp} />
+          <Button label="Login" variant="primary" onClick={handleLogin} />
         </div>
       </div>
     </header>
