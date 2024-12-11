@@ -1,27 +1,26 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../common/Button";
+import WhiteLogo from "../../assets/newlogo.png";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const handleSignUp = () => {
-    console.log("Sign Up clicked");
+    navigate("/sign-up");
   };
 
   const handleLogin = () => {
-    console.log("Login clicked");
+    navigate("/sign-in");
   };
   return (
-    <header className=" p-8 cursor-pointer">
+    <header className=" p-3 cursor-pointer mt-[-40px]">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="font-bold text-2xl" onClick={() => navigate("/")}>
-          Exp<span className="text-primary">Trackr</span>
-        </div>
+        <img src={WhiteLogo} alt="ExpTrackr logo" className="w-48 " />
         <nav>
           <ul className="flex space-x-6">
             <li>
               <div
-                className=" transition-colors font-sans"
+                className=" text-white font-sans"
                 onClick={() => navigate("/about")}
               >
                 Features
@@ -29,7 +28,7 @@ const Header: React.FC = () => {
             </li>
             <li>
               <div
-                className=" transition-colors font-sans"
+                className=" text-white font-sans"
                 onClick={() => navigate("/pricing")}
               >
                 Pricing
@@ -37,7 +36,7 @@ const Header: React.FC = () => {
             </li>
             <li>
               <div
-                className=" transition-colors font-sans"
+                className=" text-white font-sans"
                 onClick={() => navigate("/faqs")}
               >
                 FAQs

@@ -1,5 +1,4 @@
 import React from "react";
-import bannerImageUrl from "../../assets/banner.png";
 import Button from "../../common/Button";
 
 interface BannerProps {
@@ -12,9 +11,9 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ altText, className }) => {
   return (
     <div
-      className={` w-full  bg-gray-200 flex flex-col items-center justify-center ${className}`}
+      className={` w-full   flex flex-col items-center justify-center ${className} `}
     >
-      <div className="mt-16 flex flex-col gap-4 mb-8">
+      <div className="mt-48 flex flex-col gap-4 mb-8">
         <h1 className=" z-10 text-white text-3xl font-bold text-center leading-relaxed tracking-widest">
           All your Transactions in one place.
         </h1>
@@ -26,11 +25,6 @@ const Banner: React.FC<BannerProps> = ({ altText, className }) => {
         <Button label="Let’s get started" variant="primary" />
         <Button label="Learn more" variant="outline" />
       </div>
-      <img
-        src={bannerImageUrl}
-        alt={altText}
-        className="  w-full h-full object-cover"
-      />
     </div>
   );
 };
