@@ -1,10 +1,12 @@
 import Sidebar from "@/components/sidebar";
-import { useState } from "react";
 import MainPanel from "./main-panel";
+import useLocalStorage from "@/hooks/use-local-storage";
 
 export default function Dashboard() {
-  const defaultCollapsed = false;
-  const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+  const [isCollapsed, setIsCollapsed] = useLocalStorage({
+    key: "collapsed-sidebar",
+    defaultValue: false,
+  });
 
   return (
     <>

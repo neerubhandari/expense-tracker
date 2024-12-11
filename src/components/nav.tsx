@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useCheckActiveNav from "@/hooks/useCheckActive";
 
 interface NavProps {
   isCollapsed: boolean;
@@ -26,14 +27,15 @@ interface NavProps {
 
 export default function Nav({ links, isCollapsed }: NavProps) {
   const renderLink = ({ sub, ...rest }: SideLink) => {
+    const key = `${rest.title}-${rest.href}`;
     if (isCollapsed && sub)
-      return <NavLinkIconDropdown {...rest} sub={sub} key={rest.href} />;
+      return <NavLinkIconDropdown {...rest} sub={sub} key={key} />;
 
-    if (isCollapsed) return <NavLinkIcon {...rest} key={rest.href} />;
+    if (isCollapsed) return <NavLinkIcon {...rest} key={key} />;
 
-    if (sub) return <NavLinkDropdown {...rest} sub={sub} key={rest.href} />;
+    if (sub) return <NavLinkDropdown {...rest} sub={sub} key={key} />;
 
-    return <NavLink {...rest} key={rest.href} />;
+    return <NavLink {...rest} key={key} />;
   };
   return (
     <div
@@ -51,20 +53,14 @@ interface NavLinkProps extends SideLink {
   subLink?: boolean;
 }
 
-function NavLink({
-  title,
-  isActive,
-  icon,
-  label,
-  href,
-  subLink = false,
-}: NavLinkProps) {
+function NavLink({ title, icon, label, href, subLink = false }: NavLinkProps) {
+  const { checkActiveNav } = useCheckActiveNav();
   return (
     <Link
       to={href}
       className={cn(
         buttonVariants({
-          variant: isActive ? "secondary" : "ghost",
+          variant: checkActiveNav(href) ? "secondary" : "ghost",
           size: "sm",
         }),
         "justify-start px-6 h-12 rounded-none",
@@ -73,14 +69,24 @@ function NavLink({
     >
       <div className="mr-2">{icon}</div>
       {title}
-      {label && <span className={cn("ml-auto")}>{label}</span>}
+      {label && (
+        <div className="ml-2 bg-primary text-primary-foreground px-1 rounded-lg text-[0.625rem]">
+          {label}
+        </div>
+      )}
     </Link>
   );
 }
 
 function NavLinkDropdown({ title, icon, label, sub }: SideLink) {
+  const { checkActiveNav } = useCheckActiveNav();
+
+  /* Open collapsible by default
+   * if one of child element is active */
+  const isChildActive = !!sub?.find((s) => checkActiveNav(s.href));
+
   return (
-    <Collapsible>
+    <Collapsible defaultOpen={isChildActive}>
       <CollapsibleTrigger
         className={cn(
           buttonVariants({ variant: "ghost", size: "sm" }),
@@ -89,14 +95,18 @@ function NavLinkDropdown({ title, icon, label, sub }: SideLink) {
       >
         <div className="mr-2">{icon}</div>
         {title}
+        {label && (
+          <div className="ml-2 bg-primary text-primary-foreground px-1 rounded-lg text-[0.625rem]">
+            {label}
+          </div>
+        )}
         <span
           className={cn(
-            'ml-1 transition-all group-data-[state="open"]:-rotate-180'
+            'ml-auto transition-all group-data-[state="open"]:-rotate-180'
           )}
         >
           <IconChevronDown stroke={1} />
         </span>
-        {label ? <span className="ml-auto">{label}</span> : ""}
       </CollapsibleTrigger>
       <CollapsibleContent className="collapsibleDropdown" asChild>
         <ul>
@@ -111,7 +121,8 @@ function NavLinkDropdown({ title, icon, label, sub }: SideLink) {
   );
 }
 
-function NavLinkIcon({ title, isActive, icon, label, href }: NavLinkProps) {
+function NavLinkIcon({ title, icon, label, href }: NavLinkProps) {
+  const { checkActiveNav } = useCheckActiveNav();
   return (
     <Tooltip delayDuration={0}>
       <TooltipTrigger asChild>
@@ -119,7 +130,7 @@ function NavLinkIcon({ title, isActive, icon, label, href }: NavLinkProps) {
           to={href}
           className={cn(
             buttonVariants({
-              variant: isActive ? "secondary" : "ghost",
+              variant: checkActiveNav(href) ? "secondary" : "ghost",
               size: "icon",
             }),
             "h-12 w-12"
@@ -140,12 +151,22 @@ function NavLinkIcon({ title, isActive, icon, label, href }: NavLinkProps) {
 }
 
 function NavLinkIconDropdown({ title, icon, label, sub }: SideLink) {
+  const { checkActiveNav } = useCheckActiveNav();
+
+  /* Open collapsible by default
+   * if one of child element is active */
+  const isChildActive = !!sub?.find((s) => checkActiveNav(s.href));
+
   return (
     <DropdownMenu>
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-12 h-12">
+            <Button
+              variant={isChildActive ? "secondary" : "ghost"}
+              size="icon"
+              className="w-12 h-12"
+            >
               {icon}
             </Button>
           </DropdownMenuTrigger>
@@ -167,8 +188,11 @@ function NavLinkIconDropdown({ title, icon, label, sub }: SideLink) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {sub!.map(({ title, icon, label, href }) => (
-          <DropdownMenuItem key={title} asChild>
-            <Link to={href}>
+          <DropdownMenuItem key={`${title}-${href}`} asChild>
+            <Link
+              to={href}
+              className={`${checkActiveNav(href) ? "bg-secondary" : ""}`}
+            >
               {icon} <span className="ml-2">{title}</span>
               {label && <span className="ml-auto text-xs">{label}</span>}
             </Link>
