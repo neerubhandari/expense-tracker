@@ -9,6 +9,7 @@ import {
 
 import "./index.css";
 import Router from "./services/router";
+import { ThemeProvider } from "./components/ui/theme-provider";
 
 const router = createBrowserRouter(
   createRoutesFromElements(<Route path="/*" element={<Router />} />)
@@ -16,6 +17,8 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </React.StrictMode>
 );
